@@ -129,7 +129,51 @@ namespace System
             string pattern = @"^[A-Za-z0-9]+$";  //@意思忽略转义，+匹配前面一次或多次，$匹配结尾
             Match match = Regex.Match(str, pattern);
             return match.Success;
-        } 
+        }
+        #endregion
+
+        #region C#中Decimal类型截取保留N位小数并且不进行四舍五入操作
+        /// <summary>
+        /// 开发中，需要使Decimal类型数据保留小数点后的两位小数且不需要进行四舍五入操作，即直接截取小数点后面的两位小数即可。例如：1.245M --> 1.24，而不是1.25
+        /// </summary>
+        /// <param name="d">需要保留的decimal</param>
+        /// <param name="n">几位小数</param>
+        /// <returns></returns>
+        public static decimal CutDecimalWithN(decimal d, int n)
+        {
+            string strDecimal = d.ToString();
+            int index = strDecimal.IndexOf(".");
+            if (index == -1 || strDecimal.Length < index + n + 1)
+            {
+                strDecimal = string.Format("{0:F" + n + "}", d);
+            }
+            else
+            {
+                int length = index;
+                if (n != 0)
+                {
+                    length = index + n + 1;
+                }
+                strDecimal = strDecimal.Substring(0, length);
+            }
+            return Decimal.Parse(strDecimal);
+        }
+        #endregion
+
+        #region 验证字符串是否为手机号码 + public static bool IsPhoneNumber(string phoneNumber)
+        /// &lt;summary&gt;
+        /// 验证字符串是否为手机号码
+        /// &lt;/summary&gt;
+        /// &lt;param name="phoneNumber"&gt;待验证字符串&lt;/param&gt;
+        /// &lt;returns&gt;
+        /// 验证结果
+        /// &lt;para&gt; true  :输入字符串为有效的手机号码&lt;/para&gt;
+        /// &lt;para&gt; false :输入字符串为无效的手机号码&lt;/para&gt;
+        /// &lt;/returns&gt;
+        public static bool IsPhoneNumber(string phoneNumber)
+        {
+            return Regex.IsMatch(phoneNumber, @"^1(3[0-9]|5[0-9]|7[6-8]|8[0-9])[0-9]{8}$");
+        }
         #endregion
     }
 }
